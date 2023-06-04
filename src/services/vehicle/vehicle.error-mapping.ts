@@ -13,10 +13,10 @@ export const errorMapping: ErrorMapping = {
     400: {
       'Invalid query parameters. Check the page and limit parameters.':
         'Não foi possível carregar os veículos. Tente novamente mais tarde.',
-      'Vehicle already exists.': 'Veículo já cadastrado.',
+      'Vehicle already exists.': 'Placa do veículo já cadastrada.',
       'Invalid url parameter. Check plate parameter.':
-        'Veículo não encontrado.',
-      'Vehicle not found.': 'Veículo não encontrado.',
+        'Placa do veículo não encontrada.',
+      'Vehicle not found.': 'Placa do veículo não encontrada.',
     },
     500: {
       'An error occurred in our server.':

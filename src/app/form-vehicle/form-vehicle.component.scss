@@ -11,6 +11,12 @@
     max-width: 500px;
     gap: 8px;
 
+    .form-vehicle__full-form{
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+
     .form-vehicle__function-switcher {
       display: flex;
       justify-content: space-between;

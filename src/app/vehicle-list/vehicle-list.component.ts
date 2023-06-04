@@ -27,10 +27,10 @@ export class VehicleListComponent implements OnInit {
     this.vehicleService.observableVehicles.subscribe((vehicles) => {
       this.vehicles = vehicles;
     });
-    this.vehicleService.observableLoading.subscribe((loading) => {
+    this.vehicleService.observableLoadingVehicles.subscribe((loading) => {
       this.loading = loading;
     });
-    this.vehicleService.overservableTotalItems.subscribe((totalItems) => {
+    this.vehicleService.observableTotalItems.subscribe((totalItems) => {
       if (!totalItems) {
         return;
       }
@@ -52,7 +52,7 @@ export class VehicleListComponent implements OnInit {
         this.message = 'Não há mais veículos em nosso sistema.';
       }
     });
-    this.vehicleService.observableLoading.subscribe((loading) => {
+    this.vehicleService.observableLoadingVehicles.subscribe((loading) => {
       this.loading = loading;
     });
   }

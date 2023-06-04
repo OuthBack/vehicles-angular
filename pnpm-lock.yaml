@@ -15,6 +15,7 @@ specifiers:
   '@angular/platform-browser-dynamic': ^14.1.0
   '@angular/router': ^14.1.0
   '@types/jasmine': ~4.0.0
+  husky: ^8.0.3
   jasmine-core: ~4.2.0
   karma: ~6.4.0
   karma-chrome-launcher: ~3.1.0
@@ -38,6 +39,7 @@ dependencies:
   '@angular/platform-browser': 14.3.0_wd3bqoh2pkuw5m54j2g5y4s4ra
   '@angular/platform-browser-dynamic': 14.3.0_66avhzcjyfbc4wwcsnykbga42a
   '@angular/router': 14.3.0_rmubd7q5dbiie2xgqqhnhdvaaa
+  husky: 8.0.3
   ngx-infinite-scroll: 14.0.1_vfvstxrqwyf64j6egrpcvwompq
   rxjs: 7.5.7
   tslib: 2.5.3
@@ -4207,6 +4209,12 @@ packages:
     dependencies:
       ms: 2.1.3
     dev: true
+
+  /husky/8.0.3:
+    resolution: {integrity: sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==}
+    engines: {node: '>=14'}
+    hasBin: true
+    dev: false
 
   /iconv-lite/0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}

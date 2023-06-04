@@ -4,6 +4,9 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehicleService } from 'src/services/vehicle/vehicle.service';
 import { errorMapping } from 'src/services/vehicle/vehicle.error-mapping';
+import { Vehicle } from 'src/services/vehicle/model/vehicle.model';
+
+type ButtonTitle = 'Cadastrar veículo' | 'Editar veículo';
 
 @Component({
   selector: 'form-vehicle',
@@ -11,12 +14,15 @@ import { errorMapping } from 'src/services/vehicle/vehicle.error-mapping';
   templateUrl: './form-vehicle.component.html',
 })
 export class CreateVehicleComponent implements OnInit {
+  buttonTitle: ButtonTitle = 'Cadastrar veículo';
+  loadingVehicle = false;
+  vehicleToEdit: Vehicle | null = null;
   actionType: 'create' | 'edit' = 'create';
   minYear = 0;
   maxYear = new Date().getFullYear() + 1;
   formBuilder = new FormBuilder();
   vehicleForm = this.formBuilder.nonNullable.group({
-    model: ['', [Validators.required, Validators.nullValidator]],
+    model: ['', [Validators.required]],
     brand: ['', [Validators.required]],
     year: [
       new Date().getFullYear(),
@@ -26,8 +32,11 @@ export class CreateVehicleComponent implements OnInit {
         Validators.max(this.maxYear),
       ],
     ],
-    plate: ['', [Validators.required]],
-    chassis: ['', [Validators.required]],
+    plate: ['', [Validators.required, Validators.min(7), Validators.max(7)]],
+    chassis: [
+      '',
+      [Validators.required, Validators.min(17), Validators.max(17)],
+    ],
     renavam: [
       '',
       [Validators.required, Validators.minLength(11), Validators.maxLength(11)],
@@ -44,10 +53,40 @@ export class CreateVehicleComponent implements OnInit {
 
   onClickSwitchToEdit() {
     this.actionType = 'edit';
+    this.buttonTitle = 'Editar veículo';
+    this.vehicleToEdit = null;
+    this.vehicleForm.reset();
   }
 
   onClickSwitchToCreate() {
     this.actionType = 'create';
+    this.buttonTitle = 'Cadastrar veículo';
+    this.vehicleToEdit = null;
+    this.vehicleForm.reset();
+  }
+
+  onGetVehicle() {
+    if (this.vehicleForm.getRawValue().plate.length !== 7) {
+      this.matSnackBar.open('Formulário inválido', 'Fechar', {});
+      return;
+    }
+
+    this.vehicleService.getVehicle({
+      plate: this.vehicleForm.getRawValue().plate,
+    });
+
+    this.vehicleService.observableVehicle.subscribe((vehicle) => {
+      if (!vehicle) {
+        return;
+      }
+
+      this.vehicleToEdit = vehicle;
+      this.vehicleForm.patchValue(vehicle);
+    });
+
+    this.vehicleService.observableLoadingVehicles.subscribe((loading) => {
+      this.loadingVehicle = loading;
+    });
   }
 
   onSubmit() {
@@ -68,7 +107,7 @@ export class CreateVehicleComponent implements OnInit {
     }
     actions[this.actionType]();
 
-    this.vehicleService.overservableError.subscribe((error) => {
+    this.vehicleService.observableError.subscribe((error) => {
       if (error) {
         this.matSnackBar.open(
           errorMapping.statusCode[error.statusCode][error.message] ||

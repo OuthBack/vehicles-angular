@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Vehicle } from './model/vehicle.model';
 
+type GetVehicleArgs = { plate: string };
+
+type GetVehicleResponse = { vehicle: Vehicle };
+
 type GetVehiclesArgs = {
   page: number;
   limit: number;
@@ -26,30 +30,69 @@ type DeleteVehicleArgs = { plate: string };
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
-  private loading = new BehaviorSubject(false);
+  private loadingVehicle = new BehaviorSubject(false);
+  private loadingVehicles = new BehaviorSubject(false);
+  private vehicle = new BehaviorSubject<Vehicle | null>(null);
   private vehicles = new BehaviorSubject<Vehicle[]>([]);
   private totalItems = new BehaviorSubject<number | null>(null);
   private error = new BehaviorSubject<{
     statusCode: number;
     message: string;
   } | null>(null);
-  observableLoading = this.loading.asObservable();
+  observableLoadingVehicles = this.loadingVehicles.asObservable();
+  observableVehicle = this.vehicle.asObservable();
   observableVehicles = this.vehicles.asObservable();
-  overservableTotalItems = this.totalItems.asObservable();
-  overservableError = this.error.asObservable();
+  observableTotalItems = this.totalItems.asObservable();
+  observableError = this.error.asObservable();
 
   constructor(private http: HttpClient) {}
 
+  getVehicle({ plate }: GetVehicleArgs) {
+    this.loadingVehicle.next(true);
+    const response = this.http.get(
+      `/api/vehicle/${plate}`
+    ) as Observable<GetVehicleResponse>;
+
+    response.subscribe({
+      next: ({ vehicle }) => {
+        this.loadingVehicle.next(false);
+        if (!vehicle) {
+          this.error.next({
+            message: 'Placa do veículo não encontrada.',
+            statusCode: 400,
+          });
+          return;
+        }
+        this.vehicle.next(vehicle);
+      },
+      error: (error) => {
+        this.error.next({
+          message: error.error.message,
+          statusCode: error.status,
+        });
+        this.error.next(null);
+      },
+    });
+  }
   getVehicles({ page, limit }: GetVehiclesArgs) {
-    this.loading.next(true);
+    this.loadingVehicles.next(true);
     const response = this.http.get('/api/vehicle', {
       params: { page, limit },
     }) as Observable<GetVehiclesResponse>;
 
-    response.subscribe(({ vehicles, totalItems }) => {
-      this.loading.next(false);
-      this.vehicles.next([...this.vehicles.value, ...vehicles]);
-      this.totalItems.next(totalItems);
+    response.subscribe({
+      next: ({ vehicles, totalItems }) => {
+        this.loadingVehicles.next(false);
+        this.vehicles.next([...this.vehicles.value, ...vehicles]);
+        this.totalItems.next(totalItems);
+      },
+      error: (error) => {
+        this.error.next({
+          message: error.error.message,
+          statusCode: error.status,
+        });
+        this.error.next(null);
+      },
     });
   }
 
