@@ -8,15 +8,13 @@ import { Vehicle } from 'src/services/vehicle/model/vehicle.model';
 import { ValidationErrors } from '@angular/forms';
 import { validationUtils } from 'src/utils/validation.utils';
 
-type ButtonTitle = 'Cadastrar veículo' | 'Editar veículo';
-
 @Component({
   selector: 'form-vehicle',
   styleUrls: ['./form-vehicle.component.scss'],
   templateUrl: './form-vehicle.component.html',
 })
 export class CreateVehicleComponent implements OnInit {
-  buttonTitle: ButtonTitle = 'Cadastrar veículo';
+  buttonTitle = 'Salvar';
   loadingVehicle = false;
   vehicleToEdit: Vehicle | null = null;
   actionType: 'create' | 'edit' = 'create';
@@ -69,28 +67,26 @@ export class CreateVehicleComponent implements OnInit {
       return [];
     }
     const errors = Object.keys(control.errors ?? {});
+    console.log(errors);
     return errors.length > 0 ? errors[0] : null;
   }
 
   onClickSwitchToEdit() {
     this.actionType = 'edit';
-    this.buttonTitle = 'Editar veículo';
     this.vehicleToEdit = null;
-    this.vehicleForm.reset();
-    this.vehicleForm.setErrors({});
+    console.log(this.vehicleForm.errors);
   }
 
   onClickSwitchToCreate() {
     this.actionType = 'create';
-    this.buttonTitle = 'Cadastrar veículo';
     this.vehicleToEdit = null;
-    this.vehicleForm.reset();
-    this.vehicleForm.setErrors({});
   }
 
   onGetVehicle() {
     if (this.vehicleForm.getRawValue().plate.length !== 7) {
-      this.matSnackBar.open('Formulário inválido', 'Fechar', {});
+      this.matSnackBar.open('Formulário inválido', 'Fechar', {
+        duration: 1000,
+      });
       return;
     }
 
@@ -114,7 +110,9 @@ export class CreateVehicleComponent implements OnInit {
 
   onSubmit() {
     if (!this.vehicleForm.valid) {
-      this.matSnackBar.open('Formulário inválido', 'Fechar', {});
+      this.matSnackBar.open('Formulário inválido', 'Fechar', {
+        duration: 1000,
+      });
       return;
     }
 
@@ -134,18 +132,22 @@ export class CreateVehicleComponent implements OnInit {
     this.vehicleService.observableIsCreateVehicleSuccess.subscribe(
       (success) => {
         if (success) {
-          this.matSnackBar.open(
-            'Veículo cadastrado com sucesso!',
-            'Fechar',
-            {}
-          );
+          this.matSnackBar.open('Veículo cadastrado com sucesso!', 'Fechar', {
+            duration: 1000,
+          });
+          this.vehicleToEdit = null;
+          this.vehicleForm.reset({}, { onlySelf: true, emitEvent: false });
         }
       }
     );
 
     this.vehicleService.observableIsEditVehicleSuccess.subscribe((success) => {
       if (success) {
-        this.matSnackBar.open('Veículo cadastrado com sucesso!', 'Fechar', {});
+        this.matSnackBar.open('Veículo editado com sucesso!', 'Fechar', {
+          duration: 1000,
+        });
+        this.vehicleToEdit = null;
+        this.vehicleForm.reset({}, { onlySelf: true, emitEvent: false });
       }
     });
 
@@ -155,7 +157,9 @@ export class CreateVehicleComponent implements OnInit {
           errorMapping.statusCode[error.statusCode][error.message] ||
             errorMapping.default,
           'Fechar',
-          {}
+          {
+            duration: 1000,
+          }
         );
       }
     });

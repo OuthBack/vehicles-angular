@@ -3,10 +3,11 @@
     <div class="form-vehicle__function-switcher">
       <button (click)="onClickSwitchToCreate()" type="button" mat-raised-button
         [ngClass]="{'disable-click': actionType === 'create'}" [color]="actionType === 'create' && 'primary'">Cadastrar
-        Veículo</button>
+        Veículo
+      </button>
       <button (click)="onClickSwitchToEdit()" type="button" mat-raised-button
-        [ngClass]="{'disable-click': actionType === 'edit'}" [color]="actionType === 'edit' && 'primary'">Editar
-        Veículo</button>
+        [ngClass]="{'disable-click': actionType === 'edit'}" [color]="actionType === 'edit' && 'primary'">Editar Veículo
+      </button>
     </div>
     <form #createVehicleForm="ngForm" [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
@@ -16,6 +17,9 @@
         <mat-hint>A placa precisa ser única. Letras minúsculas serão consideradas como maiúsculas</mat-hint>
         <mat-error *ngIf="getFirstError('plate') === 'required'">
           A placa é <strong>obrigatório</strong>.
+        </mat-error>
+        <mat-error *ngIf="getFirstError('plate') === 'minlength' || getFirstError('plate') === 'maxlength'">
+          A placa precisa conter <strong>7 caracteres</strong>.
         </mat-error>
       </mat-form-field>
       <div class="form-vehicle__full-form" *ngIf="actionType === 'create' || vehicleToEdit">
@@ -84,7 +88,7 @@
         </div>
       </div>
       <div class="form-vehicle__button-container" *ngIf="actionType === 'edit' && !vehicleToEdit">
-        <button (click)="onGetVehicle()" type="button" mat-raised-button color="primary">Buscar veículo</button>
+        <button (click)="onGetVehicle()" type="button" mat-raised-button color="primary">Buscar Veículo</button>
       </div>
       <div *ngIf="loadingVehicle" class=" form-vehicle__loading">
         <mat-spinner></mat-spinner>

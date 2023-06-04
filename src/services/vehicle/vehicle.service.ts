@@ -31,6 +31,7 @@ type DeleteVehicleArgs = { plate: string };
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
   private isCreateVehicleSuccess = new BehaviorSubject<boolean | null>(null);
+  private isDeleteVehicleSuccess = new BehaviorSubject<boolean | null>(null);
   private isEditVehicleSuccess = new BehaviorSubject<boolean | null>(null);
   private loadingVehicle = new BehaviorSubject(false);
   private loadingVehicles = new BehaviorSubject(false);
@@ -43,6 +44,7 @@ export class VehicleService {
   } | null>(null);
   observableIsCreateVehicleSuccess = this.isCreateVehicleSuccess.asObservable();
   observableIsEditVehicleSuccess = this.isEditVehicleSuccess.asObservable();
+  observableIsDeleteVehicleSuccess = this.isDeleteVehicleSuccess.asObservable();
   observableLoadingVehicles = this.loadingVehicles.asObservable();
   observableLoadingVehicle = this.loadingVehicle.asObservable();
   observableVehicle = this.vehicle.asObservable();
@@ -60,7 +62,6 @@ export class VehicleService {
 
     response.subscribe({
       next: ({ vehicle }) => {
-        console.log('first');
         this.loadingVehicle.next(false);
 
         if (!vehicle) {
@@ -168,6 +169,10 @@ export class VehicleService {
 
         value.splice(index, 1);
         this.vehicles.next(value);
+      },
+      complete: () => {
+        this.isDeleteVehicleSuccess.next(true);
+        this.isDeleteVehicleSuccess.next(null);
       },
       error: (error) => {
         this.error.next({
