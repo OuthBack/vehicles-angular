@@ -13,8 +13,8 @@
         <mat-label for="plate">Placa</mat-label>
         <input minlength="7" maxlength="7" type="text" matInput formControlName="plate" [errorStateMatcher]="matcher"
           placeholder="ABC1234">
-        <mat-hint>A placa precisa ser única</mat-hint>
-        <mat-error *ngIf="vehicleForm.controls.plate.hasError('required')">
+        <mat-hint>A placa precisa ser única. Letras minúsculas serão consideradas como maiúsculas</mat-hint>
+        <mat-error *ngIf="getFirstError('plate') === 'required'">
           A placa é <strong>obrigatório</strong>.
         </mat-error>
       </mat-form-field>
@@ -23,7 +23,8 @@
           <mat-label for="model">Modelo</mat-label>
           <input maxlength="60" type="text" matInput formControlName="model" [errorStateMatcher]="matcher"
             placeholder="Fiesta">
-          <mat-error *ngIf="vehicleForm.controls.model.hasError('required')">
+
+          <mat-error *ngIf="getFirstError('model') === 'required'">
             O modelo é <strong>obrigatório</strong>.
           </mat-error>
         </mat-form-field>
@@ -31,20 +32,21 @@
           <mat-label for="brand">Marca</mat-label>
           <input type="text" maxlength="30" matInput formControlName="brand" [errorStateMatcher]="matcher"
             placeholder="Ford">
-          <mat-error *ngIf="vehicleForm.controls.brand.hasError('required')">
+          <mat-error *ngIf="getFirstError('brand') === 'required'">
             A marca é <strong>obrigatório</strong>.
           </mat-error>
         </mat-form-field>
         <mat-form-field>
           <mat-label for="year">Ano</mat-label>
           <input type="number" matInput formControlName="year" [errorStateMatcher]="matcher" placeholder="2023">
-          <mat-error *ngIf="vehicleForm.controls.year.hasError('required')">
+
+          <mat-error *ngIf="getFirstError('year') === 'required'">
             O ano é <strong>obrigatório</strong>.
           </mat-error>
-          <mat-error *ngIf="vehicleForm.controls.year.hasError('min')">
+          <mat-error *ngIf="getFirstError('year') === 'min'">
             O ano é menor que <strong>{{ minYear }}</strong>.
           </mat-error>
-          <mat-error *ngIf="vehicleForm.controls.year.hasError('max')">
+          <mat-error *ngIf="getFirstError('year') === 'max'">
             O ano é maior que <strong>{{ maxYear }}</strong>.
           </mat-error>
         </mat-form-field>
@@ -52,11 +54,12 @@
           <mat-label for="chassis">Chassi</mat-label>
           <input minlength="17" maxlength="17" type="text" matInput formControlName="chassis"
             [errorStateMatcher]="matcher" placeholder="48E avmWjV A9 tb5312">
-          <mat-error
-            *ngIf="vehicleForm.controls.chassis.hasError('minlength') || vehicleForm.controls.chassis.hasError('maxlength')">
-            O chassi precisa conter <strong>17</strong> digitos.
+          <mat-hint>O chassi precisa ser único</mat-hint>
+
+          <mat-error *ngIf="getFirstError('chassis') === 'minlength' || getFirstError('chassis') === 'maxlength'">
+            O chassi precisa conter <strong>17 digitos</strong>.
           </mat-error>
-          <mat-error *ngIf="vehicleForm.controls.chassis.hasError('required')">
+          <mat-error *ngIf="getFirstError('chassis') === 'required'">
             O chassi é <strong>obrigatório</strong>.
           </mat-error>
         </mat-form-field>
@@ -64,14 +67,15 @@
           <mat-label for="renavam">Renavam</mat-label>
           <input minlength="11" maxlength="11" type="text" matInput formControlName="renavam"
             [errorStateMatcher]="matcher" placeholder="45206083475">
-          <mat-error
-            *ngIf="vehicleForm.controls.renavam.hasError('minlength') || vehicleForm.controls.renavam.hasError('maxlength')">
-            O renavam precisa conter <strong>11</strong> digitos.
-          </mat-error>
-          <mat-error *ngIf="vehicleForm.controls.renavam.hasError('required')">
+          <mat-hint>O renavam precisa ser único</mat-hint>
+
+          <mat-error *ngIf="getFirstError('renavam') === 'required'">
             O renavam é <strong>obrigatório</strong>.
           </mat-error>
-          <mat-error *ngIf="vehicleForm.controls.renavam">
+          <mat-error *ngIf="getFirstError('renavam') === 'minlength' || getFirstError('renavam') === 'maxlength'">
+            O renavam precisa conter <strong>11 digitos</strong>.
+          </mat-error>
+          <mat-error *ngIf="getFirstError('renavam') === 'pattern'">
             O renavam precisa conter somente <strong>números</strong>.
           </mat-error>
         </mat-form-field>

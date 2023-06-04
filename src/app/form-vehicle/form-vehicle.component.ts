@@ -59,7 +59,17 @@ export class CreateVehicleComponent implements OnInit {
     chassis: FormControl<string>
   ): ValidationErrors | null {
     const is17Characters = chassis.value.replace(' ', '').length === 17;
-    return is17Characters ? chassis : { minlength: true, maxlength: true };
+    return is17Characters ? null : { minlength: true, maxlength: true };
+  }
+
+  getFirstError(controlName: string) {
+    const control = this.vehicleForm.get(controlName);
+
+    if (!control) {
+      return [];
+    }
+    const errors = Object.keys(control.errors ?? {});
+    return errors.length > 0 ? errors[0] : null;
   }
 
   onClickSwitchToEdit() {
@@ -67,6 +77,7 @@ export class CreateVehicleComponent implements OnInit {
     this.buttonTitle = 'Editar veículo';
     this.vehicleToEdit = null;
     this.vehicleForm.reset();
+    this.vehicleForm.setErrors({});
   }
 
   onClickSwitchToCreate() {
@@ -74,10 +85,10 @@ export class CreateVehicleComponent implements OnInit {
     this.buttonTitle = 'Cadastrar veículo';
     this.vehicleToEdit = null;
     this.vehicleForm.reset();
+    this.vehicleForm.setErrors({});
   }
 
   onGetVehicle() {
-    const a = this.vehicleForm.getRawValue();
     if (this.vehicleForm.getRawValue().plate.length !== 7) {
       this.matSnackBar.open('Formulário inválido', 'Fechar', {});
       return;
@@ -107,17 +118,36 @@ export class CreateVehicleComponent implements OnInit {
       return;
     }
 
+    const value = this.vehicleForm.getRawValue();
+    const vehicle = { ...value, plate: value.plate.toUpperCase() };
+
     const actions = {
-      create: () =>
-        this.vehicleService.createVehicle(this.vehicleForm.getRawValue()),
-      edit: () =>
-        this.vehicleService.editVehicle(this.vehicleForm.getRawValue()),
+      create: () => this.vehicleService.createVehicle(vehicle),
+      edit: () => this.vehicleService.editVehicle(vehicle),
     };
 
     if (!(this.actionType in actions)) {
       return;
     }
     actions[this.actionType]();
+
+    this.vehicleService.observableIsCreateVehicleSuccess.subscribe(
+      (success) => {
+        if (success) {
+          this.matSnackBar.open(
+            'Veículo cadastrado com sucesso!',
+            'Fechar',
+            {}
+          );
+        }
+      }
+    );
+
+    this.vehicleService.observableIsEditVehicleSuccess.subscribe((success) => {
+      if (success) {
+        this.matSnackBar.open('Veículo cadastrado com sucesso!', 'Fechar', {});
+      }
+    });
 
     this.vehicleService.observableError.subscribe((error) => {
       if (error) {

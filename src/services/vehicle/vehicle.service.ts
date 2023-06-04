@@ -30,6 +30,8 @@ type DeleteVehicleArgs = { plate: string };
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
+  private isCreateVehicleSuccess = new BehaviorSubject<boolean | null>(null);
+  private isEditVehicleSuccess = new BehaviorSubject<boolean | null>(null);
   private loadingVehicle = new BehaviorSubject(false);
   private loadingVehicles = new BehaviorSubject(false);
   private vehicle = new BehaviorSubject<Vehicle | null>(null);
@@ -39,6 +41,8 @@ export class VehicleService {
     statusCode: number;
     message: string;
   } | null>(null);
+  observableIsCreateVehicleSuccess = this.isCreateVehicleSuccess.asObservable();
+  observableIsEditVehicleSuccess = this.isEditVehicleSuccess.asObservable();
   observableLoadingVehicles = this.loadingVehicles.asObservable();
   observableLoadingVehicle = this.loadingVehicle.asObservable();
   observableVehicle = this.vehicle.asObservable();
@@ -110,6 +114,10 @@ export class VehicleService {
     response.subscribe({
       next: ({ vehicle }) =>
         this.vehicles.next([vehicle, ...this.vehicles.value]),
+      complete: () => {
+        this.isCreateVehicleSuccess.next(true);
+        this.isCreateVehicleSuccess.next(null);
+      },
       error: (error) => {
         this.error.next({
           message: error.error.message,
@@ -134,7 +142,10 @@ export class VehicleService {
         value[index] = vehicle;
         this.vehicles.next(value);
       },
-
+      complete: () => {
+        this.isEditVehicleSuccess.next(true);
+        this.isEditVehicleSuccess.next(null);
+      },
       error: (error) => {
         this.error.next({
           message: error.error.message,
