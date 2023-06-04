@@ -21,7 +21,7 @@
       <div class="form-vehicle__full-form" *ngIf="actionType === 'create' || vehicleToEdit">
         <mat-form-field [formGroup]="vehicleForm">
           <mat-label for="model">Modelo</mat-label>
-          <input maxlength="30" type="text" matInput formControlName="model" [errorStateMatcher]="matcher"
+          <input maxlength="60" type="text" matInput formControlName="model" [errorStateMatcher]="matcher"
             placeholder="Fiesta">
           <mat-error *ngIf="vehicleForm.controls.model.hasError('required')">
             O modelo é <strong>obrigatório</strong>.
