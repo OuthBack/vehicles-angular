@@ -1,0 +1,70 @@
+<div class="form-vehicle__container">
+  <div class="form-vehicle__inner-container">
+    <div class="form-vehicle__function-switcher">
+      <button (click)="onClickSwitchToCreate()" type="button" mat-raised-button
+        [ngClass]="{'disable-click': actionType === 'create'}" [color]="actionType === 'create' && 'primary'">Cadastrar
+        Veículo</button>
+      <button (click)="onClickSwitchToEdit()" type="button" mat-raised-button
+        [ngClass]="{'disable-click': actionType === 'edit'}" [color]="actionType === 'edit' && 'primary'">Editar
+        Veículo</button>
+    </div>
+    <form #createVehicleForm="ngForm" [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+      <mat-form-field [formGroup]="vehicleForm">
+        <mat-label for="model">Modelo</mat-label>
+        <input type="text" matInput formControlName="model" [errorStateMatcher]="matcher" placeholder="Fiesta">
+        <mat-error *ngIf="vehicleForm.controls.model.hasError('required')">
+          O modelo é <strong>obrigatório</strong>.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="brand">Marca</mat-label>
+        <input type="text" matInput formControlName="brand" [errorStateMatcher]="matcher" placeholder="Ford">
+        <mat-error *ngIf="vehicleForm.controls.brand.hasError('required')">
+          A marca é <strong>obrigatório</strong>.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="year">Ano</mat-label>
+        <input type="number" matInput formControlName="year" [errorStateMatcher]="matcher" placeholder="2023">
+        <mat-error *ngIf="vehicleForm.controls.year.hasError('required')">
+          O ano é <strong>obrigatório</strong>.
+        </mat-error>
+        <mat-error *ngIf="vehicleForm.controls.year.hasError('min')">
+          O ano é menor que <strong>{{ minYear }}</strong>.
+        </mat-error>
+        <mat-error *ngIf="vehicleForm.controls.year.hasError('max')">
+          O ano é maior que <strong>{{ maxYear }}</strong>.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="plate">Placa</mat-label>
+        <input type="text" matInput formControlName="plate" [errorStateMatcher]="matcher" placeholder="ABC-1234">
+        <mat-error *ngIf="vehicleForm.controls.plate.hasError('required')">
+          A placa é <strong>obrigatório</strong>.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="chassis">Chassi</mat-label>
+        <input type="text" matInput formControlName="chassis" [errorStateMatcher]="matcher"
+          placeholder="48E avmWjV A9 tb5312">
+        <mat-error *ngIf="vehicleForm.controls.chassis.hasError('required')">
+          O chassi é <strong>obrigatório</strong>.
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label for="renavam">Renavam</mat-label>
+        <input type="text" matInput formControlName="renavam" [errorStateMatcher]="matcher" placeholder="45206083475">
+        <mat-error
+          *ngIf="vehicleForm.controls.renavam.hasError('minlength') || vehicleForm.controls.renavam.hasError('maxlength')">
+          O renavam precisa conter <strong>11</strong> digitos.
+        </mat-error>
+        <mat-error *ngIf="vehicleForm.controls.renavam.hasError('required')">
+          O renavam é <strong>obrigatório</strong>.
+        </mat-error>
+      </mat-form-field>
+      <div class="form-vehicle__button-container">
+        <button type="submit" mat-raised-button color="primary">Criar</button>
+      </div>
+    </form>
+  </div>
+</div>

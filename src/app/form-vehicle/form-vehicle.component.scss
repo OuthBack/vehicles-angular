@@ -1,0 +1,35 @@
+.form-vehicle__container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+
+  .form-vehicle__inner-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 500px;
+    gap: 8px;
+
+    .form-vehicle__function-switcher {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      button.disable-click {
+        pointer-events: none;
+        cursor: default;
+      }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+
+      .form-vehicle__button-container{
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+}

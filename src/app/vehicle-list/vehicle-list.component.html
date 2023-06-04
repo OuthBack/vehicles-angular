@@ -1,0 +1,30 @@
+<div class="vehicle-list__list" infinite-scroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="1000"
+  (scrolled)="onScroll()">
+  <mat-card class="vehicle-list__mat-card" *ngFor="let vehicle of vehicles">
+    <div class="vehicle-list__card-inner-container">
+      <mat-card-header>
+        <mat-card-title>{{ vehicle.model }} {{vehicle.year}}</mat-card-title>
+        <mat-card-subtitle>{{ vehicle.brand }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <p>Modelo: {{ vehicle.model }}</p>
+          <p>Chassi: {{ vehicle.chassis }}</p>
+          <p>Placa: {{ vehicle.plate }}</p>
+          <p>Renavam: {{ vehicle.renavam }}</p>
+        </div>
+      </mat-card-content>
+    </div>
+    <button (click)="onDelete(vehicle)" class="vehicle-list_delete-button">
+      <mat-icon color="warn">delete</mat-icon>
+    </button>
+  </mat-card>
+  <div class="vehicle-list__bottom">
+    <p>{{message}}</p>
+
+    <div *ngIf="loading">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+
+</div>

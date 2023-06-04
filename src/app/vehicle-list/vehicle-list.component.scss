@@ -1,0 +1,34 @@
+.vehicle-list__mat-card {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: space-between;
+
+    .vehicle-list__card-inner-container {
+        display: flex;
+        flex-direction: column
+    }
+
+  .vehicle-list_delete-button {
+    background-color: transparent;
+    border: none;
+
+    > * {
+      cursor: pointer;
+    }
+  }
+}
+
+.vehicle-list__bottom {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.vehicle-list__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
