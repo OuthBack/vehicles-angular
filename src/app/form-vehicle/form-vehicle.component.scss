@@ -11,10 +11,23 @@
     max-width: 500px;
     gap: 8px;
 
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
     .form-vehicle__full-form{
       display: flex;
       flex-direction: column;
+      gap: 4px;
       width: 100%;
+    }
+
+    .form-vehicle__loading{
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .form-vehicle__function-switcher {

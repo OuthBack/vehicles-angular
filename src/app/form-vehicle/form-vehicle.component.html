@@ -71,6 +71,9 @@
           <mat-error *ngIf="vehicleForm.controls.renavam.hasError('required')">
             O renavam é <strong>obrigatório</strong>.
           </mat-error>
+          <mat-error *ngIf="vehicleForm.controls.renavam">
+            O renavam precisa conter somente <strong>números</strong>.
+          </mat-error>
         </mat-form-field>
         <div class="form-vehicle__button-container">
           <button type="submit" mat-raised-button color="primary">{{buttonTitle}}</button>
@@ -79,7 +82,7 @@
       <div class="form-vehicle__button-container" *ngIf="actionType === 'edit' && !vehicleToEdit">
         <button (click)="onGetVehicle()" type="button" mat-raised-button color="primary">Buscar veículo</button>
       </div>
-      <div *ngIf="loadingVehicle">
+      <div *ngIf="loadingVehicle" class=" form-vehicle__loading">
         <mat-spinner></mat-spinner>
       </div>
     </form>

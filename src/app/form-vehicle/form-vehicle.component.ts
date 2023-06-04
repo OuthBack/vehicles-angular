@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehicleService } from 'src/services/vehicle/vehicle.service';
 import { errorMapping } from 'src/services/vehicle/vehicle.error-mapping';
 import { Vehicle } from 'src/services/vehicle/model/vehicle.model';
+import { ValidationErrors } from '@angular/forms';
+import { validationUtils } from 'src/utils/validation.utils';
 
 type ButtonTitle = 'Cadastrar veículo' | 'Editar veículo';
 
@@ -33,13 +35,15 @@ export class CreateVehicleComponent implements OnInit {
       ],
     ],
     plate: ['', [Validators.required, Validators.min(7), Validators.max(7)]],
-    chassis: [
-      '',
-      [Validators.required, Validators.min(17), Validators.max(17)],
-    ],
+    chassis: ['', [Validators.required, this.chassisValidator]],
     renavam: [
       '',
-      [Validators.required, Validators.minLength(11), Validators.maxLength(11)],
+      [
+        Validators.required,
+        Validators.minLength(11),
+        Validators.maxLength(11),
+        Validators.pattern(validationUtils.regex.renavam),
+      ],
     ],
   });
   matcher = new ErrorStateMatcher();
@@ -50,6 +54,13 @@ export class CreateVehicleComponent implements OnInit {
   ) {}
 
   ngOnInit() {}
+
+  private chassisValidator(
+    chassis: FormControl<string>
+  ): ValidationErrors | null {
+    const is17Characters = chassis.value.replace(' ', '').length === 17;
+    return is17Characters ? chassis : { minlength: true, maxlength: true };
+  }
 
   onClickSwitchToEdit() {
     this.actionType = 'edit';
@@ -66,6 +77,7 @@ export class CreateVehicleComponent implements OnInit {
   }
 
   onGetVehicle() {
+    const a = this.vehicleForm.getRawValue();
     if (this.vehicleForm.getRawValue().plate.length !== 7) {
       this.matSnackBar.open('Formulário inválido', 'Fechar', {});
       return;
@@ -84,7 +96,7 @@ export class CreateVehicleComponent implements OnInit {
       this.vehicleForm.patchValue(vehicle);
     });
 
-    this.vehicleService.observableLoadingVehicles.subscribe((loading) => {
+    this.vehicleService.observableLoadingVehicle.subscribe((loading) => {
       this.loadingVehicle = loading;
     });
   }

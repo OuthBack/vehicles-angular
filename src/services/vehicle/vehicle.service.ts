@@ -40,6 +40,7 @@ export class VehicleService {
     message: string;
   } | null>(null);
   observableLoadingVehicles = this.loadingVehicles.asObservable();
+  observableLoadingVehicle = this.loadingVehicle.asObservable();
   observableVehicle = this.vehicle.asObservable();
   observableVehicles = this.vehicles.asObservable();
   observableTotalItems = this.totalItems.asObservable();
@@ -55,7 +56,9 @@ export class VehicleService {
 
     response.subscribe({
       next: ({ vehicle }) => {
+        console.log('first');
         this.loadingVehicle.next(false);
+
         if (!vehicle) {
           this.error.next({
             message: 'Placa do veículo não encontrada.',
@@ -63,7 +66,9 @@ export class VehicleService {
           });
           return;
         }
+
         this.vehicle.next(vehicle);
+        this.vehicle.next(null);
       },
       error: (error) => {
         this.error.next({
@@ -113,8 +118,6 @@ export class VehicleService {
         this.error.next(null);
       },
     });
-
-    return this.vehicles;
   }
 
   editVehicle({ plate, ...vehicle }: UpdateVehicleArgs) {
@@ -131,6 +134,7 @@ export class VehicleService {
         value[index] = vehicle;
         this.vehicles.next(value);
       },
+
       error: (error) => {
         this.error.next({
           message: error.error.message,
@@ -139,8 +143,6 @@ export class VehicleService {
         this.error.next(null);
       },
     });
-
-    return this.vehicles;
   }
 
   deleteVehicle({ plate }: DeleteVehicleArgs) {
@@ -164,7 +166,5 @@ export class VehicleService {
         this.error.next(null);
       },
     });
-
-    return this.vehicles;
   }
 }

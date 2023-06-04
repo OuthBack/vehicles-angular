@@ -58,11 +58,11 @@ export class VehicleListComponent implements OnInit {
   }
 
   onDelete(vehicle: Vehicle) {
-    this.vehicleService
-      .deleteVehicle({ plate: vehicle.plate })
-      .subscribe((vehicles) => {
-        this.vehicles = vehicles;
-        this.matSnackBar.open('Veículo excluído com sucesso!', 'Fechar');
-      });
+    this.vehicleService.deleteVehicle({ plate: vehicle.plate });
+
+    this.vehicleService.observableVehicles.subscribe((vehicles) => {
+      this.vehicles = vehicles;
+      this.matSnackBar.open('Veículo excluído com sucesso!', 'Fechar');
+    });
   }
 }
