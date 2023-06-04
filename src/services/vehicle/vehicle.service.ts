@@ -34,6 +34,7 @@ export class VehicleService {
   private isDeleteVehicleSuccess = new BehaviorSubject<boolean | null>(null);
   private isEditVehicleSuccess = new BehaviorSubject<boolean | null>(null);
   private loadingVehicle = new BehaviorSubject(false);
+  private loadingSaveVehicle = new BehaviorSubject(false);
   private loadingVehicles = new BehaviorSubject(false);
   private vehicle = new BehaviorSubject<Vehicle | null>(null);
   private vehicles = new BehaviorSubject<Vehicle[]>([]);
@@ -47,6 +48,7 @@ export class VehicleService {
   observableIsDeleteVehicleSuccess = this.isDeleteVehicleSuccess.asObservable();
   observableLoadingVehicles = this.loadingVehicles.asObservable();
   observableLoadingVehicle = this.loadingVehicle.asObservable();
+  observableLoadingSaveVehicle = this.loadingSaveVehicle.asObservable();
   observableVehicle = this.vehicle.asObservable();
   observableVehicles = this.vehicles.asObservable();
   observableTotalItems = this.totalItems.asObservable();
@@ -107,14 +109,18 @@ export class VehicleService {
   }
 
   createVehicle(vehicle: CreateVehicleArgs) {
+    this.loadingSaveVehicle.next(true);
     const response = this.http.post(
       '/api/vehicle',
       vehicle
     ) as Observable<CreateVehicleResponse>;
 
     response.subscribe({
-      next: ({ vehicle }) =>
-        this.vehicles.next([vehicle, ...this.vehicles.value]),
+      next: ({ vehicle }) => {
+        this.loadingSaveVehicle.next(false);
+
+        this.vehicles.next([vehicle, ...this.vehicles.value]);
+      },
       complete: () => {
         this.isCreateVehicleSuccess.next(true);
         this.isCreateVehicleSuccess.next(null);

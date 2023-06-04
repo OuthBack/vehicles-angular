@@ -9,7 +9,7 @@
         [ngClass]="{'disable-click': actionType === 'edit'}" [color]="actionType === 'edit' && 'primary'">Editar Veículo
       </button>
     </div>
-    <form #createVehicleForm="ngForm" [formGroup]="vehicleForm" (ngSubmit)="onSubmit()">
+    <form #saveVehicleForm="ngForm" [formGroup]="vehicleForm" (ngSubmit)="onSubmit(saveVehicleForm)">
       <mat-form-field>
         <mat-label for="plate">Placa</mat-label>
         <input minlength="7" maxlength="7" type="text" matInput formControlName="plate" [errorStateMatcher]="matcher"
@@ -19,7 +19,7 @@
           A placa é <strong>obrigatório</strong>.
         </mat-error>
         <mat-error *ngIf="getFirstError('plate') === 'minlength' || getFirstError('plate') === 'maxlength'">
-          A placa precisa conter <strong>7 caracteres</strong>.
+          A placa precisa conter <strong>7 caractéres</strong>.
         </mat-error>
       </mat-form-field>
       <div class="form-vehicle__full-form" *ngIf="actionType === 'create' || vehicleToEdit">
@@ -86,6 +86,9 @@
         <div class="form-vehicle__button-container">
           <button type="submit" mat-raised-button color="primary">{{buttonTitle}}</button>
         </div>
+      </div>
+      <div *ngIf="loadingSaveVehicle" class=" form-vehicle__loading">
+        <mat-spinner></mat-spinner>
       </div>
       <div class="form-vehicle__button-container" *ngIf="actionType === 'edit' && !vehicleToEdit">
         <button (click)="onGetVehicle()" type="button" mat-raised-button color="primary">Buscar Veículo</button>

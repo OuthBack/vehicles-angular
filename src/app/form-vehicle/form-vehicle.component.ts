@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroupDirective,
+  Validators,
+} from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { VehicleService } from 'src/services/vehicle/vehicle.service';
@@ -16,6 +21,8 @@ import { validationUtils } from 'src/utils/validation.utils';
 export class CreateVehicleComponent implements OnInit {
   buttonTitle = 'Salvar';
   loadingVehicle = false;
+  loadingCreateVehicle = false;
+  loadingSaveVehicle = false;
   vehicleToEdit: Vehicle | null = null;
   actionType: 'create' | 'edit' = 'create';
   minYear = 0;
@@ -32,7 +39,10 @@ export class CreateVehicleComponent implements OnInit {
         Validators.max(this.maxYear),
       ],
     ],
-    plate: ['', [Validators.required, Validators.min(7), Validators.max(7)]],
+    plate: [
+      '',
+      [Validators.required, Validators.minLength(7), Validators.maxLength(7)],
+    ],
     chassis: ['', [Validators.required, this.chassisValidator]],
     renavam: [
       '',
@@ -67,7 +77,7 @@ export class CreateVehicleComponent implements OnInit {
       return [];
     }
     const errors = Object.keys(control.errors ?? {});
-    console.log(errors);
+    console.log(control.errors, controlName);
     return errors.length > 0 ? errors[0] : null;
   }
 
@@ -108,7 +118,7 @@ export class CreateVehicleComponent implements OnInit {
     });
   }
 
-  onSubmit() {
+  onSubmit(formDirective: FormGroupDirective) {
     if (!this.vehicleForm.valid) {
       this.matSnackBar.open('Formulário inválido', 'Fechar', {
         duration: 1000,
@@ -127,7 +137,10 @@ export class CreateVehicleComponent implements OnInit {
     if (!(this.actionType in actions)) {
       return;
     }
-    actions[this.actionType]();
+
+    this.vehicleService.observableLoadingSaveVehicle.subscribe((loading) => {
+      this.loadingSaveVehicle = loading;
+    });
 
     this.vehicleService.observableIsCreateVehicleSuccess.subscribe(
       (success) => {
@@ -136,7 +149,7 @@ export class CreateVehicleComponent implements OnInit {
             duration: 1000,
           });
           this.vehicleToEdit = null;
-          this.vehicleForm.reset({}, { onlySelf: true, emitEvent: false });
+          formDirective.resetForm();
         }
       }
     );
@@ -147,7 +160,7 @@ export class CreateVehicleComponent implements OnInit {
           duration: 1000,
         });
         this.vehicleToEdit = null;
-        this.vehicleForm.reset({}, { onlySelf: true, emitEvent: false });
+        formDirective.resetForm();
       }
     });
 
@@ -163,5 +176,7 @@ export class CreateVehicleComponent implements OnInit {
         );
       }
     });
+
+    actions[this.actionType]();
   }
 }
